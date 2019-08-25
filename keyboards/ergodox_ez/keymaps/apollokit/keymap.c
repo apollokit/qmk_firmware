@@ -123,11 +123,15 @@ void rgb_matrix_indicators_user(void) {
 }
 
 #define NUM_STICKY_KEYS 5
-#define UNDEFINED 255
+#define STICKY_UNDEFINED 65535
 #define STICKY_PROP_INDEX 0
-#define STICKY_PROP_REG_KEYCODE 1
+#define STICKY_PROP_OPP_KC 1
+#define STICKY_PROP_REG_KEYCODE 2
+#define STICKY_DISENGAGED 0
+#define STICKY_ENGAGED 1
+#define STICKY_WASD_OPPOSITE_DISENGAGE
 
-uint8_t get_kc_property(uint16_t keycode, uint8_t prop) {
+uint16_t get_kc_property(uint16_t keycode, uint8_t prop) {
   switch (prop) {
     // index into sticky state arrays
     case STICKY_PROP_INDEX:
@@ -142,6 +146,20 @@ uint8_t get_kc_property(uint16_t keycode, uint8_t prop) {
           return 3;
         case KC_MOUSE_LCLICK_STICKY:
           return 4;
+      }
+    // for WASD directional use, these are the "opposite" directions
+    case STICKY_PROP_OPP_KC:
+      switch (keycode) {
+        case KC_W_STICKY:
+          return KC_S_STICKY;
+        case KC_A_STICKY:
+          return KC_D_STICKY;
+        case KC_S_STICKY:
+          return KC_W_STICKY;
+        case KC_D_STICKY:
+          return KC_A_STICKY;
+        default:
+          return STICKY_UNDEFINED;
       }
     // lookup table for the corresponding normal keycode
     case STICKY_PROP_REG_KEYCODE:
@@ -160,16 +178,17 @@ uint8_t get_kc_property(uint16_t keycode, uint8_t prop) {
   }
 
   // this shouldn't be reachable!
-  return UNDEFINED;
+  return STICKY_UNDEFINED;
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   // see https://beta.docs.qmk.fm/features/feature_macros for context
 
   // start in an untriggered (key is up, 0) state
-  static bool sticky_state[NUM_STICKY_KEYS] = {0};
+  static bool sticky_state[NUM_STICKY_KEYS] = {STICKY_DISENGAGED};
   // the last time a keyup happened.  
   static uint16_t sticky_last_keyup_time[NUM_STICKY_KEYS] = {0};
+  static bool sticky_wasd_disengage_ignore_keyup = false;
   switch (keycode) {
     // sticky behavior: if you tap the key twice within STICKY_HIJACK_DEADLINE_MS,
     // then the keyboard acts as if the key is held down. Tap again to deactivate.
@@ -183,21 +202,42 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // case KC_MOUSE_LCLICK_STICKY:
       // on keydown
       if (record->event.pressed) {
-        // send_keycode_ssaction(keycode, SS_ACTION_DOWN);
+        // if there is an "opposite" for this keycode and it is sticky engaged, 
+        // let's disengage it
+        #ifdef STICKY_WASD_OPPOSITE_DISENGAGE
+        uint16_t opp_keycode = get_kc_property(keycode, STICKY_PROP_OPP_KC);
+        if (opp_keycode != STICKY_UNDEFINED) {
+          uint16_t opp_index = get_kc_property(opp_keycode, STICKY_PROP_INDEX);
+          if (sticky_state[opp_index] == STICKY_ENGAGED) {
+            sticky_state[opp_index] = STICKY_DISENGAGED;
+            unregister_code(get_kc_property(opp_keycode, STICKY_PROP_REG_KEYCODE));
+            sticky_wasd_disengage_ignore_keyup = true;
+            // this keypress serves only to cancel the opposing dirction
+            return false;
+          }
+        }
+        #endif
+
         register_code(get_kc_property(keycode, STICKY_PROP_REG_KEYCODE));
         return false;
       }
       // on keyup
       else {
         uint16_t key_time = timer_read();
-        uint8_t index = get_kc_property(keycode, STICKY_PROP_INDEX);
+        uint16_t index = get_kc_property(keycode, STICKY_PROP_INDEX);
+
+        // if we're ignoring this keyup, then quit early.
+        if (sticky_wasd_disengage_ignore_keyup) {
+          sticky_wasd_disengage_ignore_keyup = false;
+          return false;
+        }
 
         // if we're not in keydown mode, and two presses were sent within
         // the deadline, this press activates keydown mode
-        if (sticky_state[index] == 0 &&
+        if (sticky_state[index] == STICKY_DISENGAGED &&
             key_time - sticky_last_keyup_time[index] < STICKY_HIJACK_DEADLINE_MS) 
         {
-          sticky_state[index] = 1;
+          sticky_state[index] = STICKY_ENGAGED;
           sticky_last_keyup_time[index] = key_time;
           // note that keydown event is sent on if (record->event.pressed), above
           return false;
@@ -205,9 +245,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         // otherwise just send a regular keypress and exit keydown mode, if 
         // we're in it
         else {
-          sticky_state[index] = 0;
+          sticky_state[index] = STICKY_DISENGAGED;
           sticky_last_keyup_time[index] = key_time;
-          // send_keycode_ssaction(keycode, SS_ACTION_UP);
           unregister_code(get_kc_property(keycode, STICKY_PROP_REG_KEYCODE));
           return false;
         }
