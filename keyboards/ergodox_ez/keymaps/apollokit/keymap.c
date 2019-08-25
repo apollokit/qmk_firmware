@@ -121,51 +121,45 @@ void rgb_matrix_indicators_user(void) {
   }
 }
 
-uint8_t get_kc_index(uint16_t keycode) {
-  switch (keycode) {
-    case KC_W_STICKY:
-      return 0;
-    case KC_A_STICKY:
-      return 1;
-    case KC_S_STICKY:
-      return 2;
-    case KC_D_STICKY:
-      return 3;
-    // case KC_MOUSE_LCLICK_STICKY:
-    //   return 4;
-    default:
-      return 99;
-  }
-}
-
 #define NUM_STICKY_KEYS 5
-#define SS_ACTION_TAP   0
-#define SS_ACTION_DOWN  1
-#define SS_ACTION_UP    2
-#define DO_SS_ACTION(x_code) switch (action) { case SS_ACTION_UP: SEND_STRING(SS_UP(x_code)); break; case SS_ACTION_DOWN: SEND_STRING(SS_DOWN(x_code)); break; case SS_ACTION_TAP: SEND_STRING(SS_TAP(x_code)); break; }
+#define UNDEFINED 255
+#define STICKY_PROP_INDEX 0
+#define STICKY_PROP_REG_KEYCODE 1
 
-void send_keycode_ssaction(uint16_t keycode, uint8_t action) {
-  // this handles the sending of ss actions based on keycode. Unfortunately
-  // this has to use a lookup table because the X_'s are #define's that can't 
-  // be stored in variables :(
-  switch (keycode) {
-    case KC_W_STICKY:
-      DO_SS_ACTION(X_W);
-      break;
-    case KC_A_STICKY:
-      DO_SS_ACTION(X_A);
-      break;
-    case KC_S_STICKY:
-      DO_SS_ACTION(X_S);
-      break;
-    case KC_D_STICKY:
-      DO_SS_ACTION(X_D);
-      break;
-    // case KC_MOUSE_LCLICK_STICKY:
-    //   DO_SS_ACTION(X_W);
-    default:
-      break;
+uint8_t get_kc_property(uint16_t keycode, uint8_t prop) {
+  switch (prop) {
+    // index into sticky state arrays
+    case STICKY_PROP_INDEX:
+      switch (keycode) {
+        case KC_W_STICKY:
+          return 0;
+        case KC_A_STICKY:
+          return 1;
+        case KC_S_STICKY:
+          return 2;
+        case KC_D_STICKY:
+          return 3;
+        // case KC_MOUSE_LCLICK_STICKY:
+        //   return 4;
+      }
+    // lookup table for the corresponding normal keycode
+    case STICKY_PROP_REG_KEYCODE:
+      switch (keycode) {
+        case KC_W_STICKY:
+          return KC_W;
+        case KC_A_STICKY:
+          return KC_A;
+        case KC_S_STICKY:
+          return KC_S;
+        case KC_D_STICKY:
+          return KC_D;
+        // case KC_MOUSE_LCLICK_STICKY:
+        //   return 4;
+      }
   }
+
+  // this shouldn't be reachable!
+  return UNDEFINED;
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -187,13 +181,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // case KC_MOUSE_LCLICK_STICKY:
       // on keydown
       if (record->event.pressed) {
-        send_keycode_ssaction(keycode, SS_ACTION_DOWN);
+        // send_keycode_ssaction(keycode, SS_ACTION_DOWN);
+        register_code(get_kc_property(keycode, STICKY_PROP_REG_KEYCODE));
         return false;
       }
       // on keyup
       else {
         uint16_t key_time = timer_read();
-        uint8_t index = get_kc_index(keycode);
+        uint8_t index = get_kc_property(keycode, STICKY_PROP_INDEX);
 
         // if we're not in keydown mode, and two presses were sent within
         // the deadline, this press activates keydown mode
@@ -210,7 +205,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         else {
           sticky_state[index] = 0;
           sticky_last_keyup_time[index] = key_time;
-          send_keycode_ssaction(keycode, SS_ACTION_UP);
+          // send_keycode_ssaction(keycode, SS_ACTION_UP);
+          unregister_code(get_kc_property(keycode, STICKY_PROP_REG_KEYCODE));
           return false;
         }
       }
