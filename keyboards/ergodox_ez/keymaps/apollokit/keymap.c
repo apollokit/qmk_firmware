@@ -22,6 +22,9 @@
 #define NO_TH ALGR(KC_T)
 #define NO_ETH ALGR(KC_D)
 
+// for custom sticky keys behavior
+#define STICKY_HIJACK_DEADLINE_MS 200
+
 enum custom_keycodes {
 #ifdef ORYX_CONFIGURATOR
   RGB_SLD = EZ_SAFE_RANGE,
@@ -30,6 +33,10 @@ enum custom_keycodes {
 #endif
   EPRM,
   HSV_172_255_255,
+  KC_W_STICKY,
+  KC_A_STICKY,
+  KC_S_STICKY,
+  KC_D_STICKY
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -47,7 +54,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [6] = LAYOUT_ergodox(KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,LSFT(KC_F10),KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_HOME,KC_TRANSPARENT,KC_F10,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,LCTL(KC_MINUS),KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,RSFT(KC_F12),KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_F12,KC_TRANSPARENT,KC_END,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,RCTL(KC_MINUS)),
 
-  [7] = LAYOUT_ergodox(KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_MS_BTN1,KC_MS_BTN2,KC_Q,KC_W,KC_E,KC_R,KC_T,LALT(LGUI(KC_1)),KC_LCTRL,KC_A,KC_S,KC_D,KC_F,KC_G,KC_LSHIFT,KC_Z,KC_X,KC_C,KC_V,KC_B,LALT(LGUI(KC_2)),KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TAB,KC_BSPACE,KC_TRANSPARENT,KC_SPACE,KC_MS_BTN3,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_Y,KC_U,KC_I,KC_O,KC_P,KC_TRANSPARENT,KC_H,KC_J,KC_K,KC_L,KC_SCOLON,KC_TRANSPARENT,KC_TRANSPARENT,KC_N,KC_M,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT),
+  [7] = LAYOUT_ergodox(KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_MS_BTN1,KC_MS_BTN2,KC_Q,KC_W_STICKY,KC_E,KC_R,KC_T,LALT(LGUI(KC_1)),KC_LCTRL,KC_A_STICKY,KC_S_STICKY,KC_D_STICKY,KC_F,KC_G,KC_LSHIFT,KC_Z,KC_X,KC_C,KC_V,KC_B,LALT(LGUI(KC_2)),KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TAB,KC_BSPACE,KC_TRANSPARENT,KC_SPACE,KC_MS_BTN3,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_Y,KC_U,KC_I,KC_O,KC_P,KC_TRANSPARENT,KC_H,KC_J,KC_K,KC_L,KC_SCOLON,KC_TRANSPARENT,KC_TRANSPARENT,KC_N,KC_M,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT),
 
 };
 
@@ -114,8 +121,100 @@ void rgb_matrix_indicators_user(void) {
   }
 }
 
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+uint8_t get_kc_index(uint16_t keycode) {
   switch (keycode) {
+    case KC_W_STICKY:
+      return 0;
+    case KC_A_STICKY:
+      return 1;
+    case KC_S_STICKY:
+      return 2;
+    case KC_D_STICKY:
+      return 3;
+    // case KC_MOUSE_LCLICK_STICKY:
+    //   return 4;
+    default:
+      return 99;
+  }
+}
+
+#define NUM_STICKY_KEYS 5
+#define SS_ACTION_TAP   0
+#define SS_ACTION_DOWN  1
+#define SS_ACTION_UP    2
+#define DO_SS_ACTION(x_code) switch (action) { case SS_ACTION_UP: SEND_STRING(SS_UP(x_code)); break; case SS_ACTION_DOWN: SEND_STRING(SS_DOWN(x_code)); break; case SS_ACTION_TAP: SEND_STRING(SS_TAP(x_code)); break; }
+
+void send_keycode_ssaction(uint16_t keycode, uint8_t action) {
+  // this handles the sending of ss actions based on keycode. Unfortunately
+  // this has to use a lookup table because the X_'s are #define's that can't 
+  // be stored in variables :(
+  switch (keycode) {
+    case KC_W_STICKY:
+      DO_SS_ACTION(X_W);
+      break;
+    case KC_A_STICKY:
+      DO_SS_ACTION(X_A);
+      break;
+    case KC_S_STICKY:
+      DO_SS_ACTION(X_S);
+      break;
+    case KC_D_STICKY:
+      DO_SS_ACTION(X_D);
+      break;
+    // case KC_MOUSE_LCLICK_STICKY:
+    //   DO_SS_ACTION(X_W);
+    default:
+      break;
+  }
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  // see https://beta.docs.qmk.fm/features/feature_macros for context
+
+  // start in an untriggered (key is up, 0) state
+  static bool sticky_state[NUM_STICKY_KEYS] = {0};
+  // the last time a keyup happened.  
+  static uint16_t sticky_last_keyup_time[NUM_STICKY_KEYS] = {0};
+  switch (keycode) {
+    // sticky behavior: if you tap the key twice within STICKY_HIJACK_DEADLINE_MS,
+    // then the keyboard acts as if the key is held down. Tap again to deactivate.
+    // If you tap after STICKY_HIJACK_DEADLINE_MS, regular keydown and up signals
+    // are sent
+    case KC_W_STICKY:
+    case KC_A_STICKY:
+    case KC_S_STICKY:
+    case KC_D_STICKY:
+    // case KC_MOUSE_LCLICK_STICKY:
+      // on keydown
+      if (record->event.pressed) {
+        send_keycode_ssaction(keycode, SS_ACTION_DOWN);
+        return false;
+      }
+      // on keyup
+      else {
+        uint16_t key_time = timer_read();
+        uint8_t index = get_kc_index(keycode);
+
+        // if we're not in keydown mode, and two presses were sent within
+        // the deadline, this press activates keydown mode
+        if (sticky_state[index] == 0 &&
+            key_time - sticky_last_keyup_time[index] < STICKY_HIJACK_DEADLINE_MS) 
+        {
+          sticky_state[index] = 1;
+          sticky_last_keyup_time[index] = key_time;
+          // note that keydown event is sent on if (record->event.pressed), above
+          return false;
+        }
+        // otherwise just send a regular keypress and exit keydown mode, if 
+        // we're in it
+        else {
+          sticky_state[index] = 0;
+          sticky_last_keyup_time[index] = key_time;
+          send_keycode_ssaction(keycode, SS_ACTION_UP);
+          return false;
+        }
+      }
+      return true;
     case EPRM:
       if (record->event.pressed) {
         eeconfig_init();
