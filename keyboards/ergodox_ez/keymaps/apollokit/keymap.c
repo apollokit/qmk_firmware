@@ -189,8 +189,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   // the last time a keyup happened.  
   static uint16_t sticky_last_keyup_time[NUM_STICKY_KEYS] = {0};
   static bool sticky_wasd_disengage_ignore_keyup = false;
+  uint16_t sticky_index;
   switch (keycode) {
-    // sticky behavior: if you tap the key twice within STICKY_HIJACK_DEADLINE_MS,
+    // DOUBLE CLICK sticky behavior: if you tap the key twice within STICKY_HIJACK_DEADLINE_MS,
     // then the keyboard acts as if the key is held down. Tap again to deactivate.
     // If you tap after STICKY_HIJACK_DEADLINE_MS, regular keydown and up signals
     // are sent
@@ -198,8 +199,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case KC_A_STICKY:
     case KC_S_STICKY:
     case KC_D_STICKY:
-    case KC_MOUSE_LCLICK_STICKY:
-    // case KC_MOUSE_LCLICK_STICKY:
       // on keydown
       if (record->event.pressed) {
         // if there is an "opposite" for this keycode and it is sticky engaged, 
@@ -224,7 +223,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       // on keyup
       else {
         uint16_t key_time = timer_read();
-        uint16_t index = get_kc_property(keycode, STICKY_PROP_INDEX);
+        sticky_index = get_kc_property(keycode, STICKY_PROP_INDEX);
 
         // if we're ignoring this keyup, then quit early.
         if (sticky_wasd_disengage_ignore_keyup) {
@@ -234,19 +233,47 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         // if we're not in keydown mode, and two presses were sent within
         // the deadline, this press activates keydown mode
-        if (sticky_state[index] == STICKY_DISENGAGED &&
-            key_time - sticky_last_keyup_time[index] < STICKY_HIJACK_DEADLINE_MS) 
+        if (sticky_state[sticky_index] == STICKY_DISENGAGED &&
+            key_time - sticky_last_keyup_time[sticky_index] < STICKY_HIJACK_DEADLINE_MS) 
         {
-          sticky_state[index] = STICKY_ENGAGED;
-          sticky_last_keyup_time[index] = key_time;
+          sticky_state[sticky_index] = STICKY_ENGAGED;
+          sticky_last_keyup_time[sticky_index] = key_time;
           // note that keydown event is sent on if (record->event.pressed), above
           return false;
         }
         // otherwise just send a regular keypress and exit keydown mode, if 
         // we're in it
         else {
-          sticky_state[index] = STICKY_DISENGAGED;
-          sticky_last_keyup_time[index] = key_time;
+          sticky_state[sticky_index] = STICKY_DISENGAGED;
+          sticky_last_keyup_time[sticky_index] = key_time;
+          unregister_code(get_kc_property(keycode, STICKY_PROP_REG_KEYCODE));
+          return false;
+        }
+      }
+      return true;
+    // SINGLE CLICK sticky behavior: if you press the key, then the keyboard acts 
+    // as if the key is held down. Tap again to deactivate.
+    case KC_MOUSE_LCLICK_STICKY:
+      sticky_index = get_kc_property(keycode, STICKY_PROP_INDEX);
+      // on keydown
+      if (record->event.pressed) {
+        if (sticky_state[sticky_index] == STICKY_DISENGAGED) {
+          sticky_state[sticky_index] = STICKY_ENGAGED;
+          register_code(get_kc_property(keycode, STICKY_PROP_REG_KEYCODE));
+          sticky_wasd_disengage_ignore_keyup = true;
+          return false;
+        }
+      }
+      // on keyup
+      else {
+        // if we're ignoring this keyup, then quit early.
+        if (sticky_wasd_disengage_ignore_keyup) {
+          sticky_wasd_disengage_ignore_keyup = false;
+          return false;
+        }
+        // if we're engaged, then disengage
+        else if (sticky_state[sticky_index] == STICKY_ENGAGED) {
+          sticky_state[sticky_index] = STICKY_DISENGAGED;
           unregister_code(get_kc_property(keycode, STICKY_PROP_REG_KEYCODE));
           return false;
         }
