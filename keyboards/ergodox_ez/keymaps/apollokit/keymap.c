@@ -41,7 +41,48 @@ enum custom_keycodes {
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-  [0] = LAYOUT_ergodox(KC_ESCAPE,KC_1,KC_2,KC_3,KC_4,KC_5,KC_MS_BTN1,KC_DELETE,KC_B,KC_W,KC_F,KC_D,KC_Q,LGUI(KC_R),LSFT(KC_MINUS),LCTL_T(KC_A),LSFT_T(KC_R),LALT_T(KC_S),LGUI_T(KC_T),LT(1,KC_P),LALT(KC_Y),LT(2,KC_X),LT(3,KC_G),LT(4,KC_C),KC_V,KC_Z,MT(MOD_MEH, KC_EQUAL),TG(6),TG(3),OSL(5),KC_LEFT,KC_RIGHT,KC_PGDOWN,KC_PGUP,TG(7),KC_BSPACE,KC_TAB,KC_ENTER,TG(6),KC_6,KC_7,KC_8,KC_9,KC_0,RGUI(RSFT(KC_GRAVE)),RGUI(KC_P),KC_J,KC_L,KC_U,KC_Y,KC_SCOLON,RGUI(KC_TAB),LT(1,KC_M),RGUI_T(KC_N),RALT_T(KC_E),RSFT_T(KC_I),RCTL_T(KC_O),MT(MOD_MEH, KC_QUOTE),RGUI(KC_Z),KC_K,KC_H,LT(4,KC_COMMA),LT(3,KC_DOT),KC_SLASH,KC_MINUS,KC_DOWN,KC_UP,RGUI(KC_F),TG(6),KC_GRAVE,KC_HOME,KC_END,TG(6),RCTL(KC_S),KC_ENTER,KC_SPACE),
+  /* Keymap 0: Basic layer -- default (from qmk_firmware/keyboards/ergodox_ez/keymaps/default/keymap.c)
+   *
+   * ,--------------------------------------------------.           ,--------------------------------------------------.
+   * |   =    |   1  |   2  |   3  |   4  |   5  | LEFT |           | RIGHT|   6  |   7  |   8  |   9  |   0  |   -    |
+   * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
+   * | Del    |   Q  |   W  |   E  |   R  |   T  |  L1  |           |  L1  |   Y  |   U  |   I  |   O  |   P  |   \    |
+   * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
+   * | BkSp   |   A  |   S  |   D  |   F  |   G  |------|           |------|   H  |   J  |   K  |   L  |; / L2|' / Cmd |
+   * |--------+------+------+------+------+------| Hyper|           | Meh  |------+------+------+------+------+--------|
+   * | LShift |Z/Ctrl|   X  |   C  |   V  |   B  |      |           |      |   N  |   M  |   ,  |   .  |//Ctrl| RShift |
+   * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
+   *   |Grv/L1|  '"  |AltShf| Left | Right|                                       |  Up  | Down |   [  |   ]  | ~L1  |
+   *   `----------------------------------'                                       `----------------------------------'
+   *                                        ,-------------.       ,-------------.
+   *                                        | App  | LGui |       | Alt  |Ctrl/Esc|
+   *                                 ,------|------|------|       |------+--------+------.
+   *                                 |      |      | Home |       | PgUp |        |      |
+   *                                 | Space|Backsp|------|       |------|  Tab   |Enter |
+   *                                 |      |ace   | End  |       | PgDn |        |      |
+   *                                 `--------------------'       `----------------------'
+   */
+  [0] = LAYOUT_ergodox(
+    // left hand
+    KC_ESCAPE,          KC_1,           KC_2,           KC_3,           KC_4,            KC_5,        KC_MS_BTN1,
+    KC_DELETE,          KC_B,           KC_W,           KC_F,           KC_D,            KC_Q,        LGUI(KC_R),
+    LSFT(KC_MINUS),     LCTL_T(KC_A),   LSFT_T(KC_R),   LALT_T(KC_S),   LGUI_T(KC_T),    LT(1,KC_P),
+    LALT(KC_Y),         LT(2,KC_X),     LT(3,KC_G),     LT(4,KC_C),     KC_V,            KC_Z,        MT(MOD_MEH, KC_EQUAL),
+    TG(6),              TG(3),          OSL(5),         KC_LEFT,        KC_RIGHT,
+                                                                           KC_PGDOWN,    KC_PGUP,
+                                                                           TG(7),
+                                                                           KC_BSPACE,    KC_TAB,    KC_ENTER,
+
+    // right hand
+    TG(6),          KC_6,           KC_7,            KC_8,            KC_9,            KC_0,                    RGUI(RSFT(KC_GRAVE)),
+    RGUI(KC_P),     KC_J,           KC_L,            KC_U,            KC_Y,            KC_SCOLON,               RGUI(KC_TAB),
+    LT(1,KC_M),     RGUI_T(KC_N),   RALT_T(KC_E),    RSFT_T(KC_I),    RCTL_T(KC_O),    MT(MOD_MEH, KC_QUOTE),
+    RGUI(KC_Z),     KC_K,           KC_H,            LT(4,KC_COMMA),  LT(3,KC_DOT),    KC_SLASH,                KC_MINUS,
+    KC_DOWN,        KC_UP,          RGUI(KC_F),      TG(6),           KC_GRAVE,
+    KC_HOME,      KC_END,
+    TG(6),
+    RCTL(KC_S),   KC_ENTER,    KC_SPACE
+  ),
 
   [1] = LAYOUT_ergodox(KC_ESCAPE,KC_F1,KC_F2,KC_F3,KC_F4,KC_F5,KC_TRANSPARENT,KC_TRANSPARENT,KC_EXLM,KC_AT,KC_LCBR,KC_RCBR,KC_PIPE,KC_TRANSPARENT,KC_TRANSPARENT,KC_HASH,KC_DLR,KC_LPRN,KC_RPRN,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_CIRC,KC_LBRACKET,KC_RBRACKET,KC_TILD,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,LCTL(LGUI(KC_G)),HSV_172_255_255,LGUI(KC_D),KC_BSPACE,KC_PGUP,LGUI(KC_K),KC_TRANSPARENT,KC_F6,KC_F7,KC_F8,KC_F9,KC_F10,KC_TRANSPARENT,KC_TRANSPARENT,KC_GRAVE,KC_7,KC_8,KC_9,KC_ASTR,KC_TRANSPARENT,KC_TRANSPARENT,KC_KP_4,RALT_T(KC_5),RSFT_T(KC_6),KC_PLUS,KC_TRANSPARENT,KC_TRANSPARENT,KC_AMPR,KC_1,KC_2,KC_3,KC_BSLASH,KC_TRANSPARENT,KC_TRANSPARENT,KC_0,KC_KP_DOT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_END,KC_PGDOWN,KC_SPACE),
 
