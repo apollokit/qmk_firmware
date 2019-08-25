@@ -22,9 +22,6 @@
 #define NO_TH ALGR(KC_T)
 #define NO_ETH ALGR(KC_D)
 
-// for custom sticky keys behavior
-#define STICKY_HIJACK_DEADLINE_MS 200
-
 enum custom_keycodes {
 #ifdef ORYX_CONFIGURATOR
   RGB_SLD = EZ_SAFE_RANGE,
@@ -37,8 +34,15 @@ enum custom_keycodes {
   KC_A_STICKY,
   KC_S_STICKY,
   KC_D_STICKY,
-  KC_MOUSE_LCLICK_STICKY
+  KC_MOUSE_LCLICK_STICKY,
+  ALT_TAB,
+  ALT_TILDE
 };
+
+#define ALT_TAB_TIMEOUT_MS 500
+bool is_alt_tab_active = false;
+uint16_t alt_tab_timer = 0;
+
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   /* Keymap 0: Basic layer -- default (from qmk_firmware/keyboards/ergodox_ez/keymaps/default/keymap.c)
@@ -74,8 +78,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                            KC_BSPACE,    KC_TAB,    KC_ENTER,
 
     // right hand
-    TG(6),          KC_6,           KC_7,            KC_8,            KC_9,            KC_0,                    RGUI(RSFT(KC_GRAVE)),
-    RGUI(KC_P),     KC_J,           KC_L,            KC_U,            KC_Y,            KC_SCOLON,               RGUI(KC_TAB),
+    TG(6),          KC_6,           KC_7,            KC_8,            KC_9,            KC_0,                    ALT_TILDE,
+    RGUI(KC_P),     KC_J,           KC_L,            KC_U,            KC_Y,            KC_SCOLON,               ALT_TAB,
     LT(1,KC_M),     RGUI_T(KC_N),   RALT_T(KC_E),    RSFT_T(KC_I),    RCTL_T(KC_O),    MT(MOD_MEH, KC_QUOTE),
     RGUI(KC_Z),     KC_K,           KC_H,            LT(4,KC_COMMA),  LT(3,KC_DOT),    KC_SLASH,                KC_MINUS,
     KC_DOWN,        KC_UP,          RGUI(KC_F),      TG(6),           KC_GRAVE,
@@ -163,6 +167,8 @@ void rgb_matrix_indicators_user(void) {
   }
 }
 
+// for custom sticky keys behavior
+#define STICKY_HIJACK_TIMEOUT_MS 200
 #define NUM_STICKY_KEYS 5
 #define STICKY_UNDEFINED 65535
 #define STICKY_PROP_INDEX 0
@@ -227,14 +233,61 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
   // start in an untriggered (key is up, 0) state
   static bool sticky_state[NUM_STICKY_KEYS] = {STICKY_DISENGAGED};
-  // the last time a keyup happened.  
+  // the last time a keyup happened.
   static uint16_t sticky_last_keyup_time[NUM_STICKY_KEYS] = {0};
   static bool sticky_wasd_disengage_ignore_keyup = false;
   uint16_t sticky_index;
   switch (keycode) {
-    // DOUBLE CLICK sticky behavior: if you tap the key twice within STICKY_HIJACK_DEADLINE_MS,
+    case EPRM:
+      if (record->event.pressed) {
+        eeconfig_init();
+      }
+      return false;
+    case RGB_SLD:
+      if (record->event.pressed) {
+        rgblight_mode(1);
+      }
+      return false;
+    case HSV_172_255_255:
+      if (record->event.pressed) {
+        rgblight_mode(1);
+        rgblight_sethsv(172,255,255);
+      }
+      return false;
+    // Custom alt tab handling, from https://github.com/qmk/qmk_firmware/blob/master/docs/feature_macros.md
+    case ALT_TAB:
+      if (record->event.pressed) {
+        if (!is_alt_tab_active) {
+          is_alt_tab_active = true;
+          register_code(KC_RCMD);
+        }
+        alt_tab_timer = timer_read();
+        register_code(KC_TAB);
+      } 
+      else {
+        unregister_code(KC_TAB);
+      }
+      return false;
+    // similar, but for windows within the same application. Note that it 
+    // uses the same timer as for alt tab
+    case ALT_TILDE:
+      if (record->event.pressed) {
+        if (!is_alt_tab_active) {
+          is_alt_tab_active = true;
+          register_code(KC_RCMD);
+        }
+        alt_tab_timer = timer_read();
+        register_code(KC_RSFT);
+        register_code(KC_GRAVE);
+      } 
+      else {
+        unregister_code(KC_GRAVE);
+        unregister_code(KC_RSFT);
+      }
+      return false;
+    // DOUBLE CLICK sticky behavior: if you tap the key twice within STICKY_HIJACK_TIMEOUT_MS,
     // then the keyboard acts as if the key is held down. Tap again to deactivate.
-    // If you tap after STICKY_HIJACK_DEADLINE_MS, regular keydown and up signals
+    // If you tap after STICKY_HIJACK_TIMEOUT_MS, regular keydown and up signals
     // are sent
     case KC_W_STICKY:
     case KC_A_STICKY:
@@ -242,7 +295,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case KC_D_STICKY:
       // on keydown
       if (record->event.pressed) {
-        // if there is an "opposite" for this keycode and it is sticky engaged, 
+        // if there is an "opposite" for this keycode and it is sticky engaged,
         // let's disengage it
         #ifdef STICKY_WASD_OPPOSITE_DISENGAGE
         uint16_t opp_keycode = get_kc_property(keycode, STICKY_PROP_OPP_KC);
@@ -273,16 +326,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
 
         // if we're not in keydown mode, and two presses were sent within
-        // the deadline, this press activates keydown mode
+        // the TIMEOUT, this press activates keydown mode
         if (sticky_state[sticky_index] == STICKY_DISENGAGED &&
-            key_time - sticky_last_keyup_time[sticky_index] < STICKY_HIJACK_DEADLINE_MS) 
+            key_time - sticky_last_keyup_time[sticky_index] < STICKY_HIJACK_TIMEOUT_MS)
         {
           sticky_state[sticky_index] = STICKY_ENGAGED;
           sticky_last_keyup_time[sticky_index] = key_time;
           // note that keydown event is sent on if (record->event.pressed), above
           return false;
         }
-        // otherwise just send a regular keypress and exit keydown mode, if 
+        // otherwise just send a regular keypress and exit keydown mode, if
         // we're in it
         else {
           sticky_state[sticky_index] = STICKY_DISENGAGED;
@@ -292,7 +345,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
       }
       return true;
-    // SINGLE CLICK sticky behavior: if you press the key, then the keyboard acts 
+    // SINGLE CLICK sticky behavior: if you press the key, then the keyboard acts
     // as if the key is held down. Tap again to deactivate.
     case KC_MOUSE_LCLICK_STICKY:
       sticky_index = get_kc_property(keycode, STICKY_PROP_INDEX);
@@ -320,22 +373,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
       }
       return true;
-    case EPRM:
-      if (record->event.pressed) {
-        eeconfig_init();
-      }
-      return false;
-    case RGB_SLD:
-      if (record->event.pressed) {
-        rgblight_mode(1);
-      }
-      return false;
-    case HSV_172_255_255:
-      if (record->event.pressed) {
-        rgblight_mode(1);
-        rgblight_sethsv(172,255,255);
-      }
-      return false;
   }
   return true;
 }
@@ -380,3 +417,12 @@ uint32_t layer_state_set_user(uint32_t state) {
   }
   return state;
 };
+
+void matrix_scan_user(void) {
+  if (is_alt_tab_active) {
+    if (timer_elapsed(alt_tab_timer) > ALT_TAB_TIMEOUT_MS) {
+      unregister_code(KC_RCMD);
+      is_alt_tab_active = false;
+    }
+  }
+}
