@@ -6,7 +6,8 @@
 #include "keymap_spanish.h"
 #include "keymap_hungarian.h"
 #include "keymap_swedish.h"
-#include "keymap_br_abnt2.h"
+// doesn't compile due to a bad include. *shrug*
+// #include "keymap_br_abnt2.h"
 #include "keymap_canadian_multilingual.h"
 #include "keymap_german_ch.h"
 
@@ -22,7 +23,11 @@
 #define NO_ETH ALGR(KC_D)
 
 enum custom_keycodes {
+#ifdef ORYX_CONFIGURATOR
   RGB_SLD = EZ_SAFE_RANGE,
+#else
+  RGB_SLD = SAFE_RANGE,
+#endif
   EPRM,
   HSV_172_255_255,
 };
