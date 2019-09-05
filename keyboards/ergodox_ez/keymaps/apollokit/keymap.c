@@ -22,6 +22,8 @@
 #define NO_TH ALGR(KC_T)
 #define NO_ETH ALGR(KC_D)
 
+#define KIT_LAYOUT_MAC
+
 enum custom_keycodes {
 #ifdef ORYX_CONFIGURATOR
   RGB_SLD = EZ_SAFE_RANGE,
@@ -43,7 +45,7 @@ enum custom_keycodes {
 bool is_alt_tab_active = false;
 uint16_t alt_tab_timer = 0;
 
-
+#ifdef KIT_LAYOUT_MAC
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   /* Keymap 0: Basic layer -- default (from qmk_firmware/keyboards/ergodox_ez/keymaps/default/keymap.c)
    *
@@ -72,9 +74,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_DELETE,          KC_B,           KC_W,           KC_F,           KC_D,            KC_Q,        LGUI(KC_R),
     LSFT(KC_MINUS),     LCTL_T(KC_A),   LSFT_T(KC_R),   LALT_T(KC_S),   LGUI_T(KC_T),    LT(1,KC_P),
     LALT(KC_Y),         LT(2,KC_X),     LT(3,KC_G),     LT(4,KC_C),     KC_V,            KC_Z,        MT(MOD_MEH, KC_EQUAL),
-    TG(6),              TG(3),          OSL(5),         KC_LEFT,        KC_RIGHT,
+    KC_LCTRL,           TG(3),          KC_LGUI,        KC_LEFT,        KC_RIGHT,
                                                                            KC_PGDOWN,    KC_PGUP,
-                                                                           TG(7),
+                                                                                                    TG(6),
                                                                            KC_BSPACE,    KC_TAB,    KC_ENTER,
 
     // right hand
@@ -84,7 +86,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     RGUI(KC_Z),     KC_K,           KC_H,            LT(4,KC_COMMA),  LT(3,KC_DOT),    KC_SLASH,                KC_MINUS,
     KC_DOWN,        KC_UP,          RGUI(KC_F),      TG(6),           KC_GRAVE,
     KC_HOME,      KC_END,
-    TG(6),
+    TG(7),
     RCTL(KC_S),   KC_ENTER,    KC_SPACE
   ),
 
@@ -103,7 +105,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [7] = LAYOUT_ergodox(KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_MS_BTN1,KC_MS_BTN2,KC_Q,KC_W_STICKY,KC_E,KC_R,KC_T,LALT(LGUI(KC_1)),KC_LCTRL,KC_A_STICKY,KC_S_STICKY,KC_D_STICKY,KC_F,KC_G,KC_LSHIFT,KC_Z,KC_X,KC_C,KC_V,KC_B,LALT(LGUI(KC_2)),KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TAB,KC_BSPACE,KC_TRANSPARENT,KC_SPACE,KC_MOUSE_LCLICK_STICKY,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_Y,KC_U,KC_I,KC_O,KC_P,KC_TRANSPARENT,KC_H,KC_J,KC_K,KC_L,KC_SCOLON,KC_TRANSPARENT,KC_TRANSPARENT,KC_N,KC_M,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT),
 
 };
-
+#endif
 
 extern bool g_suspend_state;
 extern rgb_config_t rgb_matrix_config;
