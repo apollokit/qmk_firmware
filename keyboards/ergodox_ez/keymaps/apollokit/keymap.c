@@ -22,8 +22,8 @@
 #define NO_TH ALGR(KC_T)
 #define NO_ETH ALGR(KC_D)
 
-// #define KIT_LAYOUT_MAC
-#define KIT_LAYOUT_UBUNTU
+#define KIT_LAYOUT_MAC
+// #define KIT_LAYOUT_UBUNTU
 
 enum custom_keycodes {
 #ifdef ORYX_CONFIGURATOR
@@ -33,6 +33,7 @@ enum custom_keycodes {
 #endif
   EPRM,
   HSV_172_255_255,
+  KC_Q_STICKY_LOADER,
   KC_W_STICKY,
   KC_A_STICKY,
   KC_S_STICKY,
@@ -103,7 +104,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [6] = LAYOUT_ergodox(KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,LSFT(KC_F10),KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_HOME,KC_TRANSPARENT,KC_F10,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,LCTL(KC_MINUS),KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,RSFT(KC_F12),KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_F12,KC_TRANSPARENT,KC_END,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,RCTL(KC_MINUS)),
 
-  [7] = LAYOUT_ergodox(KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_MS_BTN1,KC_MS_BTN2,KC_Q,KC_W_STICKY,KC_E,KC_R,KC_T,LALT(LGUI(KC_1)),KC_LCTRL,KC_A_STICKY,KC_S_STICKY,KC_D_STICKY,KC_F,KC_G,KC_LSHIFT,KC_Z,KC_X,KC_C,KC_V,KC_B,LALT(LGUI(KC_2)),KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TAB,KC_BSPACE,KC_TRANSPARENT,KC_SPACE,KC_MOUSE_LCLICK_STICKY,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_Y,KC_U,KC_I,KC_O,KC_P,KC_TRANSPARENT,KC_H,KC_J,KC_K,KC_L,KC_SCOLON,KC_TRANSPARENT,KC_TRANSPARENT,KC_N,KC_M,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT),
+  [7] = LAYOUT_ergodox(
+    KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_MS_BTN1,
+    KC_MS_BTN2,KC_Q_STICKY_LOADER,KC_W_STICKY,KC_E,KC_R,KC_T,LALT(LGUI(KC_1)),
+    KC_LCTRL,KC_A_STICKY,KC_S_STICKY,KC_D_STICKY,KC_F,KC_G,KC_LSHIFT,
+    KC_Z,KC_X,KC_C,KC_V,KC_B,LALT(LGUI(KC_2)),KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TAB,KC_BSPACE,KC_TRANSPARENT,KC_SPACE,KC_MOUSE_LCLICK_STICKY,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_Y,KC_U,KC_I,KC_O,KC_P,KC_TRANSPARENT,KC_H,KC_J,KC_K,KC_L,KC_SCOLON,KC_TRANSPARENT,KC_TRANSPARENT,KC_N,KC_M,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT),
 
 };
 
@@ -302,7 +307,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   // start in an untriggered (key is up, 0) state
   static bool sticky_state[NUM_STICKY_KEYS] = {STICKY_DISENGAGED};
   // the last time a keyup happened.
-  static uint16_t sticky_last_keyup_time[NUM_STICKY_KEYS] = {0};
+  static uint16_t sticky_last_load_time = 0;
   static bool sticky_wasd_disengage_ignore_keyup = false;
   uint16_t sticky_index;
   switch (keycode) {
@@ -353,10 +358,28 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         unregister_code(KC_RSFT);
       }
       return false;
-    // DOUBLE CLICK sticky behavior: if you tap the key twice within STICKY_HIJACK_TIMEOUT_MS,
-    // then the keyboard acts as if the key is held down. Tap again to deactivate.
-    // If you tap after STICKY_HIJACK_TIMEOUT_MS, regular keydown and up signals
-    // are sent
+
+    case KC_Q_STICKY_LOADER:
+      // on keydown
+      if (record->event.pressed) {
+        return false;
+      }
+      // on keyup
+      else { 
+        uint16_t key_time = timer_read();
+        sticky_last_load_time = key_time;
+        return false;
+      }
+
+    // SEPARATE LOADER sticky behavior: if you tap the sticky load key (for now,
+    // KC_Q_STICKY_LOADER) and then a sticky key candidate within 
+    // STICKY_HIJACK_TIMEOUT_MS, then the keyboard acts as if the sticky key is 
+    // held down. 
+    // Tap the sticky key again to deactivate.
+    // You can also tap the opposite WASD key (W<->S, A<->D) to deactivate.
+    // Multiple sticky keys can be engaged at once.
+    // If you tap after STICKY_HIJACK_TIMEOUT_MS, regular key down and up 
+    // signals are sent
     case KC_W_STICKY:
     case KC_A_STICKY:
     case KC_S_STICKY:
@@ -393,13 +416,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return false;
         }
 
-        // if we're not in keydown mode, and two presses were sent within
+        // if we're not in keydown mode, and a keypress was sent within
         // the TIMEOUT, this press activates keydown mode
         if (sticky_state[sticky_index] == STICKY_DISENGAGED &&
-            key_time - sticky_last_keyup_time[sticky_index] < STICKY_HIJACK_TIMEOUT_MS)
+            key_time - sticky_last_load_time < STICKY_HIJACK_TIMEOUT_MS)
         {
           sticky_state[sticky_index] = STICKY_ENGAGED;
-          sticky_last_keyup_time[sticky_index] = key_time;
           // note that keydown event is sent on if (record->event.pressed), above
           return false;
         }
@@ -407,12 +429,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         // we're in it
         else {
           sticky_state[sticky_index] = STICKY_DISENGAGED;
-          sticky_last_keyup_time[sticky_index] = key_time;
           unregister_code(get_kc_property(keycode, STICKY_PROP_REG_KEYCODE));
           return false;
         }
       }
       return true;
+
     // SINGLE CLICK sticky behavior: if you press the key, then the keyboard acts
     // as if the key is held down. Tap again to deactivate.
     case KC_MOUSE_LCLICK_STICKY:
