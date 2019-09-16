@@ -33,12 +33,12 @@ enum custom_keycodes {
 #endif
   EPRM,
   HSV_172_255_255,
-  KC_Q_STICKY_LOADER,
-  KC_W_STICKY,
-  KC_A_STICKY,
-  KC_S_STICKY,
-  KC_D_STICKY,
-  KC_MOUSE_LCLICK_STICKY,
+  KC_Q_HOLDDOWN_LOADER,
+  KC_W_HOLDDOWN,
+  KC_A_HOLDDOWN,
+  KC_S_HOLDDOWN,
+  KC_D_HOLDDOWN,
+  KC_MOUSE_LCLICK_HOLDDOWN,
   ALT_TAB,
   ALT_TILDE
 };
@@ -112,9 +112,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [7] = LAYOUT_ergodox(
     KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_MS_BTN1,
-    KC_MS_BTN2,KC_Q_STICKY_LOADER,KC_W_STICKY,KC_E,KC_R,KC_T,LALT(LGUI(KC_1)),
-    KC_LCTRL,KC_A_STICKY,KC_S_STICKY,KC_D_STICKY,KC_F,KC_G,KC_LSHIFT,
-    KC_Z,KC_X,KC_C,KC_V,KC_B,LALT(LGUI(KC_2)),KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TAB,KC_BSPACE,KC_TRANSPARENT,KC_SPACE,KC_MOUSE_LCLICK_STICKY,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_Y,KC_U,KC_I,KC_O,KC_P,KC_TRANSPARENT,KC_H,KC_J,KC_K,KC_L,KC_SCOLON,KC_TRANSPARENT,KC_TRANSPARENT,KC_N,KC_M,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT),
+    KC_MS_BTN2,KC_Q_HOLDDOWN_LOADER,KC_W_HOLDDOWN,KC_E,KC_R,KC_T,LALT(LGUI(KC_1)),
+    KC_LCTRL,KC_A_HOLDDOWN,KC_S_HOLDDOWN,KC_D_HOLDDOWN,KC_F,KC_G,KC_LSHIFT,
+    KC_Z,KC_X,KC_C,KC_V,KC_B,LALT(LGUI(KC_2)),KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TAB,KC_BSPACE,KC_TRANSPARENT,KC_SPACE,KC_MOUSE_LCLICK_HOLDDOWN,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_Y,KC_U,KC_I,KC_O,KC_P,KC_TRANSPARENT,KC_H,KC_J,KC_K,KC_L,KC_SCOLON,KC_TRANSPARENT,KC_TRANSPARENT,KC_N,KC_M,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT),
 
 };
 
@@ -179,7 +179,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [6] = LAYOUT_ergodox(KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,LSFT(KC_F10),KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_HOME,KC_TRANSPARENT,KC_F10,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,LALT(KC_MINUS),KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,RSFT(KC_F12),KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_F12,KC_TRANSPARENT,KC_END,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,RALT(RSFT(KC_MINUS))),
 
-  [7] = LAYOUT_ergodox(KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_MS_BTN1,KC_MS_BTN2,KC_Q,KC_W_STICKY,KC_E,KC_R,KC_T,LALT(LGUI(KC_1)),KC_LCTRL,KC_A_STICKY,KC_S_STICKY,KC_D_STICKY,KC_F,KC_G,KC_LSHIFT,KC_Z,KC_X,KC_C,KC_V,KC_B,LALT(LGUI(KC_2)),KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TAB,KC_BSPACE,KC_TRANSPARENT,KC_SPACE,KC_MOUSE_LCLICK_STICKY,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_Y,KC_U,KC_I,KC_O,KC_P,KC_TRANSPARENT,KC_H,KC_J,KC_K,KC_L,KC_SCOLON,KC_TRANSPARENT,KC_TRANSPARENT,KC_N,KC_M,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT),
+  [7] = LAYOUT_ergodox(KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_MS_BTN1,KC_MS_BTN2,KC_Q,KC_W_HOLDDOWN,KC_E,KC_R,KC_T,LALT(LGUI(KC_1)),KC_LCTRL,KC_A_HOLDDOWN,KC_S_HOLDDOWN,KC_D_HOLDDOWN,KC_F,KC_G,KC_LSHIFT,KC_Z,KC_X,KC_C,KC_V,KC_B,LALT(LGUI(KC_2)),KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TAB,KC_BSPACE,KC_TRANSPARENT,KC_SPACE,KC_MOUSE_LCLICK_HOLDDOWN,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_Y,KC_U,KC_I,KC_O,KC_P,KC_TRANSPARENT,KC_H,KC_J,KC_K,KC_L,KC_SCOLON,KC_TRANSPARENT,KC_TRANSPARENT,KC_N,KC_M,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT),
 
 };
 #endif
@@ -246,80 +246,80 @@ void rgb_matrix_indicators_user(void) {
   }
 }
 
-// for custom sticky keys behavior
-#define STICKY_HIJACK_TIMEOUT_MS 500
-#define NUM_STICKY_KEYS 5
-#define STICKY_UNDEFINED 65535
-#define STICKY_PROP_INDEX 0
-#define STICKY_PROP_OPP_KC 1
-#define STICKY_PROP_REG_KEYCODE 2
-#define STICKY_DISENGAGED 0
-#define STICKY_ENGAGED 1
-#define STICKY_WASD_OPPOSITE_DISENGAGE
+// for custom holddown keys behavior
+#define HOLDDOWN_HIJACK_TIMEOUT_MS 500
+#define NUM_HOLDDOWN_KEYS 5
+#define HOLDDOWN_UNDEFINED 65535
+#define HOLDDOWN_PROP_INDEX 0
+#define HOLDDOWN_PROP_OPP_KC 1
+#define HOLDDOWN_PROP_REG_KEYCODE 2
+#define HOLDDOWN_DISENGAGED 0
+#define HOLDDOWN_ENGAGED 1
+#define HOLDDOWN_WASD_OPPOSITE_DISENGAGE
 
 uint16_t get_kc_property(uint16_t keycode, uint8_t prop) {
   switch (prop) {
-    // index into sticky state arrays
-    case STICKY_PROP_INDEX:
+    // index into holddown state arrays
+    case HOLDDOWN_PROP_INDEX:
       switch (keycode) {
-        case KC_W_STICKY:
+        case KC_W_HOLDDOWN:
           return 0;
-        case KC_A_STICKY:
+        case KC_A_HOLDDOWN:
           return 1;
-        case KC_S_STICKY:
+        case KC_S_HOLDDOWN:
           return 2;
-        case KC_D_STICKY:
+        case KC_D_HOLDDOWN:
           return 3;
-        case KC_MOUSE_LCLICK_STICKY:
+        case KC_MOUSE_LCLICK_HOLDDOWN:
           return 4;
       }
     // for WASD directional use, these are the "opposite" directions
-    case STICKY_PROP_OPP_KC:
+    case HOLDDOWN_PROP_OPP_KC:
       switch (keycode) {
-        case KC_W_STICKY:
-          return KC_S_STICKY;
-        case KC_A_STICKY:
-          return KC_D_STICKY;
-        case KC_S_STICKY:
-          return KC_W_STICKY;
-        case KC_D_STICKY:
-          return KC_A_STICKY;
+        case KC_W_HOLDDOWN:
+          return KC_S_HOLDDOWN;
+        case KC_A_HOLDDOWN:
+          return KC_D_HOLDDOWN;
+        case KC_S_HOLDDOWN:
+          return KC_W_HOLDDOWN;
+        case KC_D_HOLDDOWN:
+          return KC_A_HOLDDOWN;
         default:
-          return STICKY_UNDEFINED;
+          return HOLDDOWN_UNDEFINED;
       }
     // lookup table for the corresponding normal keycode
-    case STICKY_PROP_REG_KEYCODE:
+    case HOLDDOWN_PROP_REG_KEYCODE:
       switch (keycode) {
-        case KC_W_STICKY:
+        case KC_W_HOLDDOWN:
           return KC_W;
-        case KC_A_STICKY:
+        case KC_A_HOLDDOWN:
           return KC_A;
-        case KC_S_STICKY:
+        case KC_S_HOLDDOWN:
           return KC_S;
-        case KC_D_STICKY:
+        case KC_D_HOLDDOWN:
           return KC_D;
-        case KC_MOUSE_LCLICK_STICKY:
+        case KC_MOUSE_LCLICK_HOLDDOWN:
           return KC_MS_BTN1;
       }
   }
 
   // this shouldn't be reachable!
-  return STICKY_UNDEFINED;
+  return HOLDDOWN_UNDEFINED;
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   // see https://beta.docs.qmk.fm/features/feature_macros for context
 
   // start in an untriggered (key is up, 0) state
-  static bool sticky_state[NUM_STICKY_KEYS] = {STICKY_DISENGAGED};
+  static bool holddown_state[NUM_HOLDDOWN_KEYS] = {HOLDDOWN_DISENGAGED};
   // the last time a keyup happened.
-  static uint16_t sticky_last_load_time = 0;
-  static bool sticky_wasd_disengage_ignore_keyup = false;
-  uint16_t sticky_index;
+  static uint16_t holddown_last_load_time = 0;
+  static bool holddown_wasd_disengage_ignore_keyup = false;
+  uint16_t holddown_index;
   switch (keycode) {
     case EPRM:
       if (record->event.pressed) {
-        eeconfig_init();
+          eeconfig_init();
       }
       return false;
     case RGB_SLD:
@@ -365,7 +365,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       return false;
 
-    case KC_Q_STICKY_LOADER:
+    case KC_Q_HOLDDOWN_LOADER:
       // on keydown
       if (record->event.pressed) {
         return false;
@@ -373,98 +373,98 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       // on keyup
       else { 
         uint16_t key_time = timer_read();
-        sticky_last_load_time = key_time;
+        holddown_last_load_time = key_time;
         return false;
       }
 
-    // SEPARATE LOADER sticky behavior: if you tap the sticky load key (for now,
-    // KC_Q_STICKY_LOADER) and then a sticky key candidate within 
-    // STICKY_HIJACK_TIMEOUT_MS, then the keyboard acts as if the sticky key is 
+    // SEPARATE LOADER holddown behavior: if you tap the holddown load key (for now,
+    // KC_Q_HOLDDOWN_LOADER) and then a holddown key candidate within 
+    // HOLDDOWN_HIJACK_TIMEOUT_MS, then the keyboard acts as if the holddown key is 
     // held down. 
-    // Tap the sticky key again to deactivate.
+    // Tap the holddown key again to deactivate.
     // You can also tap the opposite WASD key (W<->S, A<->D) to deactivate.
-    // Multiple sticky keys can be engaged at once.
-    // If you tap after STICKY_HIJACK_TIMEOUT_MS, regular key down and up 
+    // Multiple holddown keys can be engaged at once.
+    // If you tap after HOLDDOWN_HIJACK_TIMEOUT_MS, regular key down and up 
     // signals are sent
-    case KC_W_STICKY:
-    case KC_A_STICKY:
-    case KC_S_STICKY:
-    case KC_D_STICKY:
+    case KC_W_HOLDDOWN:
+    case KC_A_HOLDDOWN:
+    case KC_S_HOLDDOWN:
+    case KC_D_HOLDDOWN:
       // on keydown
       if (record->event.pressed) {
-        // if there is an "opposite" for this keycode and it is sticky engaged,
+        // if there is an "opposite" for this keycode and it is holddown engaged,
         // let's disengage it
-        #ifdef STICKY_WASD_OPPOSITE_DISENGAGE
-        uint16_t opp_keycode = get_kc_property(keycode, STICKY_PROP_OPP_KC);
-        if (opp_keycode != STICKY_UNDEFINED) {
-          uint16_t opp_index = get_kc_property(opp_keycode, STICKY_PROP_INDEX);
-          if (sticky_state[opp_index] == STICKY_ENGAGED) {
-            sticky_state[opp_index] = STICKY_DISENGAGED;
-            unregister_code(get_kc_property(opp_keycode, STICKY_PROP_REG_KEYCODE));
-            sticky_wasd_disengage_ignore_keyup = true;
+        #ifdef HOLDDOWN_WASD_OPPOSITE_DISENGAGE
+        uint16_t opp_keycode = get_kc_property(keycode, HOLDDOWN_PROP_OPP_KC);
+        if (opp_keycode != HOLDDOWN_UNDEFINED) {
+          uint16_t opp_index = get_kc_property(opp_keycode, HOLDDOWN_PROP_INDEX);
+          if (holddown_state[opp_index] == HOLDDOWN_ENGAGED) {
+            holddown_state[opp_index] = HOLDDOWN_DISENGAGED;
+            unregister_code(get_kc_property(opp_keycode, HOLDDOWN_PROP_REG_KEYCODE));
+            holddown_wasd_disengage_ignore_keyup = true;
             // this keypress serves only to cancel the opposing dirction
             return false;
           }
         }
         #endif
 
-        register_code(get_kc_property(keycode, STICKY_PROP_REG_KEYCODE));
+        register_code(get_kc_property(keycode, HOLDDOWN_PROP_REG_KEYCODE));
         return false;
       }
       // on keyup
       else {
         uint16_t key_time = timer_read();
-        sticky_index = get_kc_property(keycode, STICKY_PROP_INDEX);
+        holddown_index = get_kc_property(keycode, HOLDDOWN_PROP_INDEX);
 
         // if we're ignoring this keyup, then quit early.
-        if (sticky_wasd_disengage_ignore_keyup) {
-          sticky_wasd_disengage_ignore_keyup = false;
+        if (holddown_wasd_disengage_ignore_keyup) {
+          holddown_wasd_disengage_ignore_keyup = false;
           return false;
         }
 
         // if we're not in keydown mode, and a keypress was sent within
         // the TIMEOUT, this press activates keydown mode
-        if (sticky_state[sticky_index] == STICKY_DISENGAGED &&
-            key_time - sticky_last_load_time < STICKY_HIJACK_TIMEOUT_MS)
+        if (holddown_state[holddown_index] == HOLDDOWN_DISENGAGED &&
+            key_time - holddown_last_load_time < HOLDDOWN_HIJACK_TIMEOUT_MS)
         {
-          sticky_state[sticky_index] = STICKY_ENGAGED;
+          holddown_state[holddown_index] = HOLDDOWN_ENGAGED;
           // note that keydown event is sent on if (record->event.pressed), above
           return false;
         }
         // otherwise just send a regular keypress and exit keydown mode, if
         // we're in it
         else {
-          sticky_state[sticky_index] = STICKY_DISENGAGED;
-          unregister_code(get_kc_property(keycode, STICKY_PROP_REG_KEYCODE));
+          holddown_state[holddown_index] = HOLDDOWN_DISENGAGED;
+          unregister_code(get_kc_property(keycode, HOLDDOWN_PROP_REG_KEYCODE));
           return false;
         }
       }
       return true;
 
-    // SINGLE CLICK sticky behavior: if you press the key, then the keyboard acts
+    // SINGLE CLICK holddown behavior: if you press the key, then the keyboard acts
     // as if the key is held down. Tap again to deactivate.
-    case KC_MOUSE_LCLICK_STICKY:
-      sticky_index = get_kc_property(keycode, STICKY_PROP_INDEX);
+    case KC_MOUSE_LCLICK_HOLDDOWN:
+      holddown_index = get_kc_property(keycode, HOLDDOWN_PROP_INDEX);
       // on keydown
       if (record->event.pressed) {
-        if (sticky_state[sticky_index] == STICKY_DISENGAGED) {
-          sticky_state[sticky_index] = STICKY_ENGAGED;
-          register_code(get_kc_property(keycode, STICKY_PROP_REG_KEYCODE));
-          sticky_wasd_disengage_ignore_keyup = true;
+        if (holddown_state[holddown_index] == HOLDDOWN_DISENGAGED) {
+          holddown_state[holddown_index] = HOLDDOWN_ENGAGED;
+          register_code(get_kc_property(keycode, HOLDDOWN_PROP_REG_KEYCODE));
+          holddown_wasd_disengage_ignore_keyup = true;
           return false;
         }
       }
       // on keyup
       else {
         // if we're ignoring this keyup, then quit early.
-        if (sticky_wasd_disengage_ignore_keyup) {
-          sticky_wasd_disengage_ignore_keyup = false;
+        if (holddown_wasd_disengage_ignore_keyup) {
+          holddown_wasd_disengage_ignore_keyup = false;
           return false;
         }
         // if we're engaged, then disengage
-        else if (sticky_state[sticky_index] == STICKY_ENGAGED) {
-          sticky_state[sticky_index] = STICKY_DISENGAGED;
-          unregister_code(get_kc_property(keycode, STICKY_PROP_REG_KEYCODE));
+        else if (holddown_state[holddown_index] == HOLDDOWN_ENGAGED) {
+          holddown_state[holddown_index] = HOLDDOWN_DISENGAGED;
+          unregister_code(get_kc_property(keycode, HOLDDOWN_PROP_REG_KEYCODE));
           return false;
         }
       }
