@@ -42,7 +42,8 @@ enum custom_keycodes {
   ALT_TAB,
   ALT_TILDE,
   KC_LCTRL_STICKY,
-  KC_RSFT_STICKY
+  KC_RSFT_STICKY,
+  KC_CLEAR_STICKYS
 };
 
 #define ALT_TAB_TIMEOUT_MS 500
@@ -77,7 +78,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_ESCAPE,          KC_1,           KC_2,           KC_3,           KC_4,            KC_5,        KC_MS_BTN1,
     KC_DELETE,          KC_B,           KC_W,           KC_F,           KC_D,            KC_Q,        LGUI(KC_R),
     LSFT(KC_MINUS),     LCTL_T(KC_A),   LSFT_T(KC_R),   LALT_T(KC_S),   LGUI_T(KC_T),    LT(1,KC_P),
-    LALT(KC_Y),         LT(2,KC_X),     LT(3,KC_G),     LT(4,KC_C),     KC_V,            KC_Z,        MT(MOD_MEH, KC_EQUAL),
+    KC_RSFT_STICKY,     LT(2,KC_X),     LT(3,KC_G),     LT(4,KC_C),     KC_V,            KC_Z,        MT(MOD_MEH, KC_EQUAL),
     KC_LCTRL_STICKY,    TG(3),          OSL(5),         KC_LEFT,        KC_RIGHT,
                                                                            KC_PGDOWN,    KC_PGUP,
                                                                                                     TG(6),
@@ -88,13 +89,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     RGUI(KC_P),     KC_J,           KC_L,            KC_U,            KC_Y,            KC_SCOLON,               ALT_TAB,
     LT(1,KC_M),     RGUI_T(KC_N),   RALT_T(KC_E),    RSFT_T(KC_I),    RCTL_T(KC_O),    MT(MOD_MEH, KC_QUOTE),
     RGUI(KC_Z),     KC_K,           KC_H,            LT(4,KC_COMMA),  LT(3,KC_DOT),    KC_SLASH,                KC_MINUS,
-    KC_DOWN,        KC_UP,          RGUI(KC_F),      TG(6),           KC_GRAVE,
+    KC_DOWN,        KC_UP,          RGUI(KC_F),      LALT(KC_Y),      KC_GRAVE,
     KC_HOME,      KC_END,
     TG(7),
     RCTL(KC_S),   KC_ENTER,    KC_SPACE
   ),
 
-  [1] = LAYOUT_ergodox(KC_ESCAPE,KC_F1,KC_F2,KC_F3,KC_F4,KC_F5,KC_TRANSPARENT,KC_TRANSPARENT,KC_EXLM,KC_AT,KC_LCBR,KC_RCBR,KC_PIPE,KC_TRANSPARENT,KC_TRANSPARENT,KC_HASH,KC_DLR,KC_LPRN,KC_RPRN,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_CIRC,KC_LBRACKET,KC_RBRACKET,KC_TILD,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,LCTL(LGUI(KC_G)),HSV_172_255_255,LGUI(KC_D),KC_BSPACE,KC_PGUP,LGUI(KC_K),KC_TRANSPARENT,KC_F6,KC_F7,KC_F8,KC_F9,KC_F10,KC_TRANSPARENT,KC_TRANSPARENT,KC_GRAVE,KC_7,KC_8,KC_9,KC_ASTR,KC_TRANSPARENT,KC_TRANSPARENT,KC_KP_4,RALT_T(KC_5),RSFT_T(KC_6),KC_PLUS,KC_TRANSPARENT,KC_TRANSPARENT,KC_AMPR,KC_1,KC_2,KC_3,KC_BSLASH,KC_TRANSPARENT,KC_TRANSPARENT,KC_0,KC_KP_DOT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_END,KC_PGDOWN,KC_SPACE),
+  [1] = LAYOUT_ergodox(
+    KC_ESCAPE,KC_F1,KC_F2,KC_F3,KC_F4,KC_F5,KC_TRANSPARENT,
+    KC_TRANSPARENT,KC_EXLM,KC_AT,KC_LCBR,KC_RCBR,KC_PIPE,KC_TRANSPARENT,
+    KC_TRANSPARENT,KC_HASH,KC_DLR,KC_LPRN,KC_RPRN,KC_TRANSPARENT, 
+    KC_TRANSPARENT,KC_TRANSPARENT,KC_CIRC,KC_LBRACKET,KC_RBRACKET,KC_TILD,KC_TRANSPARENT,
+    KC_CLEAR_STICKYS,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
+    LCTL(LGUI(KC_G)),HSV_172_255_255,
+    LGUI(KC_D),
+    KC_BSPACE,KC_PGUP,LGUI(KC_K),
+
+    KC_TRANSPARENT,KC_F6,KC_F7,KC_F8,KC_F9,KC_F10,KC_TRANSPARENT,KC_TRANSPARENT,KC_GRAVE,KC_7,KC_8,KC_9,KC_ASTR,KC_TRANSPARENT,KC_TRANSPARENT,KC_KP_4,RALT_T(KC_5),RSFT_T(KC_6),KC_PLUS,KC_TRANSPARENT,KC_TRANSPARENT,KC_AMPR,KC_1,KC_2,KC_3,KC_BSLASH,KC_TRANSPARENT,KC_TRANSPARENT,KC_0,KC_KP_DOT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_END,KC_PGDOWN,KC_SPACE),
 
   [2] = LAYOUT_ergodox(KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_MS_BTN2,KC_MS_BTN1,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_MS_UP,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_MS_LEFT,KC_MS_DOWN,KC_MS_RIGHT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_MS_BTN1,KC_MS_BTN2,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_MS_BTN2,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_MEDIA_PLAY_PAUSE,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_MEDIA_PREV_TRACK,KC_MEDIA_NEXT_TRACK,KC_TRANSPARENT,KC_TRANSPARENT,KC_AUDIO_VOL_DOWN,KC_AUDIO_VOL_UP,KC_AUDIO_MUTE,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_WWW_BACK),
 
@@ -148,7 +159,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_ESCAPE,          KC_1,           KC_2,           KC_3,           KC_4,            KC_5,        KC_MS_BTN1,
     KC_DELETE,          KC_B,           KC_W,           KC_F,           KC_D,            KC_Q,        LGUI(KC_R),
     LSFT(KC_MINUS),     LCTL_T(KC_A),   LSFT_T(KC_R),   LALT_T(KC_S),   LGUI_T(KC_T),    LT(1,KC_P),
-    LALT(KC_Y),         LT(2,KC_X),     LT(3,KC_G),     LT(4,KC_C),     KC_V,            KC_Z,        MT(MOD_MEH, KC_EQUAL),
+    KC_RSFT_STICKY,     LT(2,KC_X),     LT(3,KC_G),     LT(4,KC_C),     KC_V,            KC_Z,        MT(MOD_MEH, KC_EQUAL),
     KC_LALT,            TG(3),          OSL(5),         KC_LEFT,        KC_RIGHT,
                                                                            KC_PGDOWN,    KC_PGUP,
                                                                                                     TG(6),
@@ -159,13 +170,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     RGUI(KC_P),     KC_J,           KC_L,            KC_U,            KC_Y,            KC_SCOLON,               ALT_TAB,
     LT(1,KC_M),     RGUI_T(KC_N),   RALT_T(KC_E),    RSFT_T(KC_I),    RCTL_T(KC_O),    MT(MOD_MEH, KC_QUOTE),
     RCTL(KC_Z),     KC_K,           KC_H,            LT(4,KC_COMMA),  LT(3,KC_DOT),    KC_SLASH,                KC_MINUS,
-    KC_DOWN,        KC_UP,          RCTL(KC_F),      TG(6),           KC_GRAVE,
+    KC_DOWN,        KC_UP,          RCTL(KC_F),      LALT(KC_Y),      KC_GRAVE,
     KC_HOME,      KC_END,
     TG(7),
     RCTL(KC_S),   KC_ENTER,    KC_SPACE
   ),
 
-  [1] = LAYOUT_ergodox(KC_ESCAPE,KC_F1,KC_F2,KC_F3,KC_F4,KC_F5,KC_TRANSPARENT,KC_TRANSPARENT,KC_EXLM,KC_AT,KC_LCBR,KC_RCBR,KC_PIPE,KC_TRANSPARENT,KC_TRANSPARENT,KC_HASH,KC_DLR,KC_LPRN,KC_RPRN,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_CIRC,KC_LBRACKET,KC_RBRACKET,KC_TILD,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,LCTL(LGUI(KC_G)),HSV_172_255_255,LGUI(KC_D),KC_BSPACE,KC_PGUP,LGUI(KC_K),KC_TRANSPARENT,KC_F6,KC_F7,KC_F8,KC_F9,KC_F10,KC_TRANSPARENT,KC_TRANSPARENT,KC_GRAVE,KC_7,KC_8,KC_9,KC_ASTR,KC_TRANSPARENT,KC_TRANSPARENT,KC_KP_4,RALT_T(KC_5),RSFT_T(KC_6),KC_PLUS,KC_TRANSPARENT,KC_TRANSPARENT,KC_AMPR,KC_1,KC_2,KC_3,KC_BSLASH,KC_TRANSPARENT,KC_TRANSPARENT,KC_0,KC_KP_DOT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_END,KC_PGDOWN,KC_SPACE),
+  [1] = LAYOUT_ergodox(
+    KC_ESCAPE,KC_F1,KC_F2,KC_F3,KC_F4,KC_F5,KC_TRANSPARENT,
+    KC_TRANSPARENT,KC_EXLM,KC_AT,KC_LCBR,KC_RCBR,KC_PIPE,KC_TRANSPARENT,
+    KC_TRANSPARENT,KC_HASH,KC_DLR,KC_LPRN,KC_RPRN,KC_TRANSPARENT, 
+    KC_TRANSPARENT,KC_TRANSPARENT,KC_CIRC,KC_LBRACKET,KC_RBRACKET,KC_TILD,KC_TRANSPARENT,
+    KC_CLEAR_STICKYS,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
+    LCTL(LGUI(KC_G)),HSV_172_255_255,
+    LGUI(KC_D),
+    KC_BSPACE,KC_PGUP,LGUI(KC_K),
+
+    KC_TRANSPARENT,KC_F6,KC_F7,KC_F8,KC_F9,KC_F10,KC_TRANSPARENT,KC_TRANSPARENT,KC_GRAVE,KC_7,KC_8,KC_9,KC_ASTR,KC_TRANSPARENT,KC_TRANSPARENT,KC_KP_4,RALT_T(KC_5),RSFT_T(KC_6),KC_PLUS,KC_TRANSPARENT,KC_TRANSPARENT,KC_AMPR,KC_1,KC_2,KC_3,KC_BSLASH,KC_TRANSPARENT,KC_TRANSPARENT,KC_0,KC_KP_DOT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_END,KC_PGDOWN,KC_SPACE),
 
   [2] = LAYOUT_ergodox(KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_MS_BTN2,KC_MS_BTN1,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_MS_UP,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_MS_LEFT,KC_MS_DOWN,KC_MS_RIGHT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_MS_BTN1,KC_MS_BTN2,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_MS_BTN2,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_MEDIA_PLAY_PAUSE,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_MEDIA_PREV_TRACK,KC_MEDIA_NEXT_TRACK,KC_TRANSPARENT,KC_TRANSPARENT,KC_AUDIO_VOL_DOWN,KC_AUDIO_VOL_UP,KC_AUDIO_MUTE,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_WWW_BACK),
 
@@ -256,6 +277,7 @@ void rgb_matrix_indicators_user(void) {
 #define NUM_STICKY_KEYS 2
 #define STICKY_ENGAGED 0
 #define STICKY_DISENGAGED 1
+#define STICKY_HOLD 2
 
 uint16_t get_sticky_keycode(uint8_t key_index) {
   switch (key_index) {
@@ -344,24 +366,16 @@ uint16_t get_kc_property(uint16_t keycode, uint8_t prop) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   // see https://beta.docs.qmk.fm/features/feature_macros for context
+  // to test/viz keyevents, go to https://w3c.github.io/uievents/tools/key-event-viewer.html
 
   // sticky keys start in an untriggered (key is not engaged, 0) state
-  static bool sticky_state[NUM_STICKY_KEYS] = {STICKY_DISENGAGED};
+  static uint8_t sticky_state[NUM_STICKY_KEYS] = {STICKY_DISENGAGED};
   // holddown keys start in an untriggered (key is up, 0) state
   static bool holddown_state[NUM_HOLDDOWN_KEYS] = {HOLDDOWN_DISENGAGED};
   // the last time a keyup happened.
   static uint16_t holddown_last_load_time = 0;
   static bool holddown_wasd_disengage_ignore_keyup = false;
   uint16_t holddown_index;
-
-  // register event (keydown state) for any engaged sticky keys
-  // want this up here so the sticky key will be invoked for any keycodes used 
-  // below
-  for (uint8_t isticky = 0; isticky < NUM_STICKY_KEYS; isticky++) {
-    if (sticky_state[isticky] ==  STICKY_ENGAGED) {
-      register_code(get_sticky_keycode(isticky));
-    }
-  } 
 
   switch (keycode) {
     case EPRM:
@@ -524,21 +538,51 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // key (gotten from get_sticky_keycode()) to be registered when a 
     // DIFFERENT, combo key is pressed. This combo key can be pressed either while 
     // the sticky key is still being held down or after the sticky key has had a
-    // physical keyup. Note that currently only a single combo key can be used;
-    // sticky behavior will be disengaged immediately after the first combo key
-    // is used
+    // physical keyup. Pressing the sticky key a second time will put it into
+    // sticky hold, where it will stay until hit again (just like sticky keys on mac)
+    // Note that there is additional sticky behavior code at the end of this function
     case KC_LCTRL_STICKY:
     case KC_RSFT_STICKY:
       // on keydown
       if (record->event.pressed) {
-        sticky_state[get_sticky_index(keycode)] =  STICKY_ENGAGED;
+        uint8_t index = get_sticky_index(keycode);
+        switch (sticky_state[index]) {
+          // if disengaged and pressed, then register a keydown that will 
+          // be used for the next combo key
+          case STICKY_DISENGAGED:
+            register_code(get_sticky_keycode(index));
+            sticky_state[index] = STICKY_ENGAGED;
+            break;
+          // tapping again makes us hold sticky for an infinite number of combo keys
+          case STICKY_ENGAGED:
+            sticky_state[index] = STICKY_HOLD;
+            break;
+          // if we're in hold, break out
+          case STICKY_HOLD:
+            unregister_code(get_sticky_keycode(index));
+            sticky_state[index] = STICKY_DISENGAGED;
+            break;
+        }
+      }
+      return false;
+    // clears all sticky state, to get back to square one
+    case KC_CLEAR_STICKYS:
+      for (uint8_t isticky = 0; isticky < NUM_STICKY_KEYS; isticky++) {
+        unregister_code(get_sticky_keycode(isticky));
+        sticky_state[isticky] = STICKY_DISENGAGED;
       }
       return false;
   }
 
   // finally, unregister event (keydown state) for any engaged sticky keys
+  // this code must be here so that the combo key press can cause sticky to
+  // disengage (this code gets called for any keypress)
   for (uint8_t isticky = 0; isticky < NUM_STICKY_KEYS; isticky++) {
+    // nothing on keydown
     if (record->event.pressed) {}
+    // disengage it on keyup. Note that technically the sticky unregister (keyup)
+    // happens before the combo key's keyup event. Still seems to deliver the 
+    // desired behavior though.
     else {
       if (sticky_state[isticky] ==  STICKY_ENGAGED) {
         unregister_code(get_sticky_keycode(isticky));
