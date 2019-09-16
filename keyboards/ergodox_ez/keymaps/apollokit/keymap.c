@@ -40,7 +40,9 @@ enum custom_keycodes {
   KC_D_HOLDDOWN,
   KC_MOUSE_LCLICK_HOLDDOWN,
   ALT_TAB,
-  ALT_TILDE
+  ALT_TILDE,
+  KC_LCTRL_STICKY,
+  KC_RSFT_STICKY
 };
 
 #define ALT_TAB_TIMEOUT_MS 500
@@ -76,7 +78,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_DELETE,          KC_B,           KC_W,           KC_F,           KC_D,            KC_Q,        LGUI(KC_R),
     LSFT(KC_MINUS),     LCTL_T(KC_A),   LSFT_T(KC_R),   LALT_T(KC_S),   LGUI_T(KC_T),    LT(1,KC_P),
     LALT(KC_Y),         LT(2,KC_X),     LT(3,KC_G),     LT(4,KC_C),     KC_V,            KC_Z,        MT(MOD_MEH, KC_EQUAL),
-    KC_LCTRL,           TG(3),          OSL(5),         KC_LEFT,        KC_RIGHT,
+    KC_LCTRL_STICKY,    TG(3),          OSL(5),         KC_LEFT,        KC_RIGHT,
                                                                            KC_PGDOWN,    KC_PGUP,
                                                                                                     TG(6),
                                                                            KC_BSPACE,    KC_TAB,    KC_ENTER,
@@ -246,6 +248,39 @@ void rgb_matrix_indicators_user(void) {
   }
 }
 
+
+// for custom sticky keys behavior
+#define STICKY_LCTRL_INDEX 0
+#define STICKY_RSFT_INDEX 1
+#define STICKY_UNDEFINED 65535
+#define NUM_STICKY_KEYS 2
+#define STICKY_ENGAGED 0
+#define STICKY_DISENGAGED 1
+
+uint16_t get_sticky_keycode(uint8_t key_index) {
+  switch (key_index) {
+    // keycode for a given index
+    case STICKY_LCTRL_INDEX:
+      return KC_LCTRL;
+    case STICKY_RSFT_INDEX:
+      return KC_RSFT;
+    default:
+      return STICKY_UNDEFINED;
+  }
+}
+
+uint16_t get_sticky_index(uint16_t keycode) {
+  switch (keycode) {
+    // index into known sticky keys
+    case KC_LCTRL_STICKY:
+      return 0;
+    case KC_RSFT_STICKY:
+      return 1;
+    default:
+      return STICKY_UNDEFINED;
+  }
+}
+
 // for custom holddown keys behavior
 #define HOLDDOWN_HIJACK_TIMEOUT_MS 500
 #define NUM_HOLDDOWN_KEYS 5
@@ -310,12 +345,24 @@ uint16_t get_kc_property(uint16_t keycode, uint8_t prop) {
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   // see https://beta.docs.qmk.fm/features/feature_macros for context
 
-  // start in an untriggered (key is up, 0) state
+  // sticky keys start in an untriggered (key is not engaged, 0) state
+  static bool sticky_state[NUM_STICKY_KEYS] = {STICKY_DISENGAGED};
+  // holddown keys start in an untriggered (key is up, 0) state
   static bool holddown_state[NUM_HOLDDOWN_KEYS] = {HOLDDOWN_DISENGAGED};
   // the last time a keyup happened.
   static uint16_t holddown_last_load_time = 0;
   static bool holddown_wasd_disengage_ignore_keyup = false;
   uint16_t holddown_index;
+
+  // register event (keydown state) for any engaged sticky keys
+  // want this up here so the sticky key will be invoked for any keycodes used 
+  // below
+  for (uint8_t isticky = 0; isticky < NUM_STICKY_KEYS; isticky++) {
+    if (sticky_state[isticky] ==  STICKY_ENGAGED) {
+      register_code(get_sticky_keycode(isticky));
+    }
+  } 
+
   switch (keycode) {
     case EPRM:
       if (record->event.pressed) {
@@ -333,6 +380,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         rgblight_sethsv(172,255,255);
       }
       return false;
+
     // Custom alt tab handling, from https://github.com/qmk/qmk_firmware/blob/master/docs/feature_macros.md
     case ALT_TAB:
       if (record->event.pressed) {
@@ -347,6 +395,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         unregister_code(KC_TAB);
       }
       return false;
+
     // similar, but for windows within the same application. Note that it 
     // uses the same timer as for alt tab
     case ALT_TILDE:
@@ -377,7 +426,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return false;
       }
 
-    // SEPARATE LOADER holddown behavior: if you tap the holddown load key (for now,
+    // SEPARATE LOADER HOLDDOWN BEHAVIOR: if you tap the holddown load key (for now,
     // KC_Q_HOLDDOWN_LOADER) and then a holddown key candidate within 
     // HOLDDOWN_HIJACK_TIMEOUT_MS, then the keyboard acts as if the holddown key is 
     // held down. 
@@ -441,7 +490,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       return true;
 
-    // SINGLE CLICK holddown behavior: if you press the key, then the keyboard acts
+    // SINGLE CLICK HOLDDOWN BEHAVIOR: if you press the key, then the keyboard acts
     // as if the key is held down. Tap again to deactivate.
     case KC_MOUSE_LCLICK_HOLDDOWN:
       holddown_index = get_kc_property(keycode, HOLDDOWN_PROP_INDEX);
@@ -469,7 +518,36 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
       }
       return true;
+
+    // STICKY KEY BEHAVIOR. When a sticky key is pressed, it will be marked as 
+    // "engaged" upon keydown. This allows the proper keycode for the sticky
+    // key (gotten from get_sticky_keycode()) to be registered when a 
+    // DIFFERENT, combo key is pressed. This combo key can be pressed either while 
+    // the sticky key is still being held down or after the sticky key has had a
+    // physical keyup. Note that currently only a single combo key can be used;
+    // sticky behavior will be disengaged immediately after the first combo key
+    // is used
+    case KC_LCTRL_STICKY:
+    case KC_RSFT_STICKY:
+      // on keydown
+      if (record->event.pressed) {
+        sticky_state[get_sticky_index(keycode)] =  STICKY_ENGAGED;
+      }
+      return false;
   }
+
+  // finally, unregister event (keydown state) for any engaged sticky keys
+  for (uint8_t isticky = 0; isticky < NUM_STICKY_KEYS; isticky++) {
+    if (record->event.pressed) {}
+    else {
+      if (sticky_state[isticky] ==  STICKY_ENGAGED) {
+        unregister_code(get_sticky_keycode(isticky));
+        // disengage sticky after one use
+        sticky_state[isticky] = STICKY_DISENGAGED;
+      }
+    }
+  } 
+
   return true;
 }
 
