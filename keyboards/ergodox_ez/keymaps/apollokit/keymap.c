@@ -160,7 +160,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_DELETE,          KC_B,           KC_W,           KC_F,           KC_D,            KC_Q,        LGUI(KC_R),
     LSFT(KC_MINUS),     LCTL_T(KC_A),   LSFT_T(KC_R),   LALT_T(KC_S),   LGUI_T(KC_T),    LT(1,KC_P),
     KC_RSFT_STICKY,     LT(2,KC_X),     LT(3,KC_G),     LT(4,KC_C),     KC_V,            KC_Z,        MT(MOD_MEH, KC_EQUAL),
-    KC_LALT,            TG(3),          OSL(5),         KC_LEFT,        KC_RIGHT,
+    KC_LCTRL_STICKY,    TG(3),          OSL(5),         KC_LEFT,        KC_RIGHT,
                                                                            KC_PGDOWN,    KC_PGUP,
                                                                                                     TG(6),
                                                                            KC_BSPACE,    KC_TAB,    KC_ENTER,
