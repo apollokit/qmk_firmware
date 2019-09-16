@@ -247,7 +247,7 @@ void rgb_matrix_indicators_user(void) {
 }
 
 // for custom sticky keys behavior
-#define STICKY_HIJACK_TIMEOUT_MS 200
+#define STICKY_HIJACK_TIMEOUT_MS 500
 #define NUM_STICKY_KEYS 5
 #define STICKY_UNDEFINED 65535
 #define STICKY_PROP_INDEX 0
