@@ -22,8 +22,8 @@
 #define NO_TH ALGR(KC_T)
 #define NO_ETH ALGR(KC_D)
 
-#define KIT_LAYOUT_MAC
-// #define KIT_LAYOUT_UBUNTU
+// #define KIT_LAYOUT_MAC
+#define KIT_LAYOUT_UBUNTU
 
 enum custom_keycodes {
 #ifdef ORYX_CONFIGURATOR
@@ -76,7 +76,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_ergodox(
     // left hand
     KC_ESCAPE,          KC_1,           KC_2,           KC_3,           KC_4,            KC_5,        KC_MS_BTN1,
-    KC_DELETE,          KC_B,           KC_W,           KC_F,           KC_D,            KC_Q,        LGUI(KC_R),
+    KC_TAB,             KC_B,           KC_W,           KC_F,           KC_D,            KC_Q,        LGUI(KC_R),
     LSFT(KC_MINUS),     LCTL_T(KC_A),   LSFT_T(KC_R),   LALT_T(KC_S),   LGUI_T(KC_T),    LT(1,KC_P),
     KC_RSFT_STICKY,     LT(2,KC_X),     LT(3,KC_G),     LT(4,KC_C),     KC_V,            KC_Z,        MT(MOD_MEH, KC_EQUAL),
     KC_LCTRL_STICKY,    TG(3),          OSL(5),         KC_LEFT,        KC_RIGHT,
@@ -97,7 +97,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [1] = LAYOUT_ergodox(
     KC_ESCAPE,KC_F1,KC_F2,KC_F3,KC_F4,KC_F5,KC_TRANSPARENT,
-    KC_TRANSPARENT,KC_EXLM,KC_AT,KC_LCBR,KC_RCBR,KC_PIPE,KC_TRANSPARENT,
+    KC_DELETE,KC_EXLM,KC_AT,KC_LCBR,KC_RCBR,KC_PIPE,KC_TRANSPARENT,
     KC_TRANSPARENT,KC_HASH,KC_DLR,KC_LPRN,KC_RPRN,KC_TRANSPARENT, 
     KC_TRANSPARENT,KC_TRANSPARENT,KC_CIRC,KC_LBRACKET,KC_RBRACKET,KC_TILD,KC_TRANSPARENT,
     KC_CLEAR_STICKYS,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
@@ -157,7 +157,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_ergodox(
     // left hand
     KC_ESCAPE,          KC_1,           KC_2,           KC_3,           KC_4,            KC_5,        KC_MS_BTN1,
-    KC_DELETE,          KC_B,           KC_W,           KC_F,           KC_D,            KC_Q,        LGUI(KC_R),
+    KC_TAB,             KC_B,           KC_W,           KC_F,           KC_D,            KC_Q,        LGUI(KC_R),
     LSFT(KC_MINUS),     LCTL_T(KC_A),   LSFT_T(KC_R),   LALT_T(KC_S),   LGUI_T(KC_T),    LT(1,KC_P),
     KC_RSFT_STICKY,     LT(2,KC_X),     LT(3,KC_G),     LT(4,KC_C),     KC_V,            KC_Z,        MT(MOD_MEH, KC_EQUAL),
     KC_LCTRL_STICKY,    TG(3),          OSL(5),         KC_LEFT,        KC_RIGHT,
@@ -178,7 +178,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [1] = LAYOUT_ergodox(
     KC_ESCAPE,KC_F1,KC_F2,KC_F3,KC_F4,KC_F5,KC_TRANSPARENT,
-    KC_TRANSPARENT,KC_EXLM,KC_AT,KC_LCBR,KC_RCBR,KC_PIPE,KC_TRANSPARENT,
+    KC_DELETE,KC_EXLM,KC_AT,KC_LCBR,KC_RCBR,KC_PIPE,KC_TRANSPARENT,
     KC_TRANSPARENT,KC_HASH,KC_DLR,KC_LPRN,KC_RPRN,KC_TRANSPARENT, 
     KC_TRANSPARENT,KC_TRANSPARENT,KC_CIRC,KC_LBRACKET,KC_RBRACKET,KC_TILD,KC_TRANSPARENT,
     KC_CLEAR_STICKYS,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
