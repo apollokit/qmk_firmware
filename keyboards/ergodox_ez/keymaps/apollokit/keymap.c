@@ -172,7 +172,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     RGUI(KC_P),     KC_J,           KC_L,            KC_U,            KC_Y,            KC_SCOLON,               ALT_TAB,
     LT(1,KC_M),     RGUI_T(KC_N),   RALT_T(KC_E),    RSFT_T(KC_I),    RCTL_T(KC_O),    KC_QUOTE,
     RCTL(KC_Z),     KC_K,           KC_H,            LT(4,KC_COMMA),  LT(3,KC_DOT),    KC_SLASH,                MT(MOD_MEH, KC_MINUS),
-    KC_DOWN,        KC_UP,          KC_RALT_STICKY,  KC_LCTRL_STICKY, TG(1),
+    KC_DOWN,        KC_UP,          KC_LCTRL_STICKY, KC_RALT_STICKY, TG(1),
     KC_RGUI_STICKY, LALT(KC_Y),
     TG(7),
     RCTL(KC_S),   KC_ENTER,    KC_SPACE
