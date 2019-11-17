@@ -52,6 +52,10 @@ enum custom_keycodes {
 bool is_alt_tab_active = false;
 uint16_t alt_tab_timer = 0;
 
+// Variable to track which layer is active. Set in layer_state_set_user()
+// this should get set by layer_state_set_user during keyboard boot up, but still initialize just in case.
+uint32_t active_layer_state = 0;
+
 #ifdef KIT_LAYOUT_MAC
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   /* Keymap 0: Basic layer -- default (from qmk_firmware/keyboards/ergodox_ez/keymaps/default/keymap.c)
@@ -301,15 +305,28 @@ void rgb_matrix_indicators_user(void) {
 
 
 // for custom sticky keys behavior
+// the indices also control which led lights up for which sticky. 
+// Only 0-2 correspond to real LEDs on the board
 #define STICKY_LCTRL_INDEX 0
-#define STICKY_RSFT_INDEX 1
-#define STICKY_RGUI_INDEX 2
-#define STICKY_RALT_INDEX 3
+#define STICKY_RALT_INDEX 1
+#define STICKY_RSFT_INDEX 2
+#define STICKY_RGUI_INDEX 3
 #define STICKY_UNDEFINED 65535
 #define NUM_STICKY_KEYS 4
 #define STICKY_ENGAGED 0
 #define STICKY_DISENGAGED 1
 #define STICKY_HOLD 2
+
+// Sticky LEDs
+// this is for a feature that hijacks the layer leds to display the current state of sticky keys. 
+// Bit meanings (0 for given bit is sticky off):
+// - 0:    ctrl sticky state
+// - 1:    shift sticky state
+// - 2:    alt sticky state
+// - 3-7: not used
+// note no LED for KC_RGUI_STICKY
+uint8_t sticky_led_state = 0;
+void leds_set(uint8_t led_mask);
 
 uint16_t get_sticky_keycode(uint8_t key_index) {
   switch (key_index) {
@@ -331,13 +348,13 @@ uint16_t get_sticky_index(uint16_t keycode) {
   switch (keycode) {
     // index into known sticky keys
     case KC_LCTRL_STICKY:
-      return 0;
+      return STICKY_LCTRL_INDEX;
     case KC_RSFT_STICKY:
-      return 1;
-    case KC_RGUI_STICKY:
-      return 2;
+      return STICKY_RSFT_INDEX;
     case KC_RALT_STICKY:
-      return 3;
+      return STICKY_RALT_INDEX;
+    case KC_RGUI_STICKY:
+      return STICKY_RGUI_INDEX;
     default:
       return STICKY_UNDEFINED;
   }
@@ -594,6 +611,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           case STICKY_DISENGAGED:
             register_code(get_sticky_keycode(index));
             sticky_state[index] = STICKY_ENGAGED;
+            // Set the state on, retaining state for other stickys.
+            sticky_led_state |= 1 << index;
+            // set the LEDs
+            leds_set(sticky_led_state);
             break;
           // tapping again makes us hold sticky for an infinite number of combo keys
           case STICKY_ENGAGED:
@@ -603,6 +624,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           case STICKY_HOLD:
             unregister_code(get_sticky_keycode(index));
             sticky_state[index] = STICKY_DISENGAGED;
+            // Set the state off, retaining state for other stickys.
+            sticky_led_state &= ~(1 << index);
+            // set the LEDs
+            leds_set(sticky_led_state);
             break;
         }
       }
@@ -613,6 +638,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         unregister_code(get_sticky_keycode(isticky));
         sticky_state[isticky] = STICKY_DISENGAGED;
       }
+      sticky_led_state = 0;
+      // restore the layer indicator leds to their rightful purpose.
+      layer_state_set_user(active_layer_state);
       return false;
   }
 
@@ -630,6 +658,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         unregister_code(get_sticky_keycode(isticky));
         // disengage sticky after one use
         sticky_state[isticky] = STICKY_DISENGAGED;
+        // Set the state off, retaining state for other stickys.
+        sticky_led_state &= ~(1 << isticky);
+        // set the LEDs
+        leds_set(sticky_led_state);
       }
     }
   } 
@@ -640,6 +672,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 uint32_t layer_state_set_user(uint32_t state) {
 
   uint8_t layer = biton32(state);
+  // save off knowledge of active layer
+  active_layer_state = state;
 
   ergodox_board_led_off();
   ergodox_right_led_1_off();
@@ -676,6 +710,18 @@ uint32_t layer_state_set_user(uint32_t state) {
       break;
   }
   return state;
+};
+
+// Sets the leds on the board using a bitmask, unlike layer_state_set_user() above.
+void leds_set(uint8_t led_mask) {
+  // ergodox_board_led_off();
+  ergodox_right_led_1_off();
+  ergodox_right_led_2_off();
+  ergodox_right_led_3_off();
+
+  if (led_mask & (1 << 0)) ergodox_right_led_1_on();
+  if (led_mask & (1 << 1)) ergodox_right_led_2_on();
+  if (led_mask & (1 << 2)) ergodox_right_led_3_on();
 };
 
 void matrix_scan_user(void) {
